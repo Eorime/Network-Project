@@ -15,7 +15,10 @@ body {
 }
 
 .create-post-btn {
-
+    margin-top: 5px;
+    width: 25%;
+    padding-top: 2px;
+    padding-bottom: 3px;
 }
 
 .new-post-header {
@@ -25,4 +28,5 @@ body {
 .post-list {
     list-style-type: none;
     padding-left: 20px;
+    margin-top: 40px;
 }

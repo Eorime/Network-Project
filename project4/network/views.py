@@ -75,3 +75,30 @@ def newpost_view(request):
             Post.objects.create(user=request.user, body=body)
     return redirect("index")
 
+#profile view
+@login_required(login_url="/login", redirect_field_name=None)
+def profile_view(request, username):
+    user_profile = User.objects.get(username = username)
+    posts = user_profile.posts.all().order_by('-timestamp')
+    is_following = request.user.following.filter(username=username).exists()
+    
+    return render(request, "network/profile.html", {
+         "profile": user_profile,
+        "posts": posts,
+        "followers_count": user_profile.followers.count(),
+        "following_count": user_profile.following.count(),
+        "is_following": is_following,
+        "is_self": request.user == user_profile
+    })
+
+#follow view
+@login_required
+def follow(request, username):
+    user_to_follow = User.objects.get(username=username)
+    if request.user != user_to_follow:
+        if request.method == "POST":
+            if request.POST.get("follow") == "1":
+                request.user.following.add(user_to_follow)
+            elif request.POST.get("follow") == "0":
+                request.user.following.remove(user_to_follow)
+    return HttpResponseRedirect(reverse("profile", args=[username]))
