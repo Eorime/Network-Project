@@ -1,5 +1,34 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+<div class="create-container">
+        {% if request.user.is_authenticated %}
+        <p class="new-post-header">New Post</p>
+        <form class="create-form" action="{% url 'newpost' %}" method="POST">
+            {% csrf_token %}
+            <textarea name="body"></textarea>
+            <input type="submit" value="Post" class="create-post-btn btn btn-primary"/>
+        </form>
+        {% else %}
+    <p>Please log in to create a post.</p>
+   {% endif %}
+    </div>
+    
+   <div class="all-posts-container">
+    <div class="post-list" >
+        <h3>All Posts</h3>
+        {% for post in posts %}
+        <div class="post">
+            <h4>{{ post.user.username }}</h4>
+            <p> {{post.body}} </p>
+            <p> {{post.timestamp}} </p>
+            <p> {{post.likes}} </p>
+        </div>
+        {% endfor %}
+    </div>
+   </div>
 {% endblock %}
+
+
+<!--post objects daemateba da iqidan wamovigebt parametrad bodys da all postsze davdebt : )
+-->
