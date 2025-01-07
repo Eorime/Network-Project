@@ -102,3 +102,13 @@ def follow(request, username):
             elif request.POST.get("follow") == "0":
                 request.user.following.remove(user_to_follow)
     return HttpResponseRedirect(reverse("profile", args=[username]))
+
+
+@login_required
+def following(request):
+    following_users = request.user.following.all()
+    posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+    return render(request, "network/index.html", {
+        "posts": posts,
+        "following_page": True
+    })

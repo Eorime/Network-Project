@@ -22,7 +22,7 @@
             <a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a>
             <p> {{post.body}} </p>
             <p> {{post.timestamp}} </p>
-            <p> {{post.likes}} </p>
+            <p>Likes: {{ post.likes.count }}</p>
         </div>
         {% endfor %}
     </div>
