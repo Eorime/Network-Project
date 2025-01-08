@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -112,3 +112,23 @@ def following(request):
         "posts": posts,
         "following_page": True
     })
+
+
+@login_required
+def like_post(request, post_id):
+    if request.method == "POST":
+        try:
+            post = Post.objects.get(pk=post_id)
+            if request.user in post.likes.all():
+                post.likes.remove(request.user)
+                liked = False
+            else:
+                post.likes.add(request.user)
+                liked = True
+                return JsonResponse({
+                "likes": post.likes.count(),
+                "liked": liked
+            })
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found"}, status=404)
+    return JsonResponse({"error": "POST request required"}, status=400)

@@ -1,37 +1,42 @@
-{% extends "network/layout.html" %}
-
-{% block body %}
+<!-- profile.html -->
+{% extends "network/layout.html" %} {% block body %}
 <div class="profile-container">
-   <h2>{{ profile.username }}'s Profile</h2>
-   
-   <div class="stats">
-       <p>Followers: {{ followers_count }}</p>
-       <p>Following: {{ following_count }}</p>
-   </div>
+	<h2>{{ profile.username }}'s Profile</h2>
 
-   {% if not is_self %}
-   <form action="{% url 'follow' profile.username %}" method="post">
-       {% csrf_token %}
-       {% if is_following %}
-           <button name="follow" value="0" class="btn btn-secondary">Unfollow</button>
-       {% else %}
-           <button name="follow" value="1" class="btn btn-primary">Follow</button>
-       {% endif %}
-   </form>
-   {% endif %}
+	<div class="stats">
+		<p>Followers: {{ followers_count }}</p>
+		<p>Following: {{ following_count }}</p>
+	</div>
 
-   <h3>Posts</h3>
-   <div class="posts-container">
-       {% for post in posts %}
-       <div class="post">
-           <p class="post-user">{{ post.user.username }}</p>
-           <p class="post-body">{{ post.body }}</p>
-           <p class="post-timestamp">{{ post.timestamp }}</p>
-           <p>Likes: {{ post.likes.count }}</p>
-       </div>
-       {% empty %}
-       <p>No posts yet</p>
-       {% endfor %}
-   </div>
+	{% if not is_self %}
+	<form action="{% url 'follow' profile.username %}" method="post">
+		{% csrf_token %} {% if is_following %}
+		<button name="follow" value="0" class="btn btn-secondary">Unfollow</button>
+		{% else %}
+		<button name="follow" value="1" class="btn btn-primary">Follow</button>
+		{% endif %}
+	</form>
+	{% endif %}
+
+	<h3>Posts</h3>
+	<div class="posts-container">
+		{% for post in posts %}
+		<div class="post">
+			<p class="post-user">{{ post.user.username }}</p>
+			<p class="post-body">{{ post.body }}</p>
+			<p class="post-timestamp">{{ post.timestamp }}</p>
+			{% if user.is_authenticated %}
+			<button class="like-btn" data-post-id="{{ post.id }}">
+				{% if user in post.likes.all %} Unlike {% else %} Like {% endif %}
+			</button>
+			{% endif %}
+			<span id="likes-{{ post.id }}" class="likes-count"
+				>{{ post.likes.count }}</span
+			>
+		</div>
+		{% empty %}
+		<p>No posts yet.</p>
+		{% endfor %}
+	</div>
 </div>
 {% endblock %}

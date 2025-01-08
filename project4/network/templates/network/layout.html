@@ -1,3 +1,4 @@
+<!-- layout.html -->
 {% load static %}
 
 <!DOCTYPE html>
@@ -13,10 +14,12 @@
 		<link href="{% static 'network/styles.css' %}" rel="stylesheet" />
 	</head>
 	<body>
+		{% csrf_token %}
+
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="#">Network</a>
 
-			<div>
+			<div class="layout-div">
 				<ul class="navbar-nav mr-auto">
 					{% if user.is_authenticated %}
 					<li class="nav-item">
@@ -48,5 +51,32 @@
 		</nav>
 
 		<div class="body">{% block body %} {% endblock %}</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const csrfToken = document.querySelector(
+					"[name=csrfmiddlewaretoken]"
+				).value;
+
+				document.querySelectorAll(".like-btn").forEach((button) => {
+					button.onclick = function () {
+						const postId = this.dataset.postId;
+
+						fetch(`/posts/${postId}/like`, {
+							method: "POST",
+							headers: {
+								"X-CSRFToken": csrfToken,
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								document.querySelector(`#likes-${postId}`).textContent =
+									data.likes;
+								this.textContent = data.liked ? "Unlike" : "Like";
+							});
+					};
+				});
+			});
+		</script>
 	</body>
 </html>

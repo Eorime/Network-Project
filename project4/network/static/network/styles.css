@@ -2,31 +2,36 @@ body {
 }
 
 .create-container {
-    height: 25%;
-    width: 25%;
-    padding-left: 20px;
+	height: 25%;
+	width: 25%;
+	padding-left: 20px;
+}
+
+.profile-container {
+	padding-left: 20px;
+	padding-top: 20px;
 }
 
 .create-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
 }
 
 .create-post-btn {
-    margin-top: 5px;
-    width: 25%;
-    padding-top: 2px;
-    padding-bottom: 3px;
+	margin-top: 5px;
+	width: 25%;
+	padding-top: 2px;
+	padding-bottom: 3px;
 }
 
 .new-post-header {
-    font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 .post-list {
-    list-style-type: none;
-    padding-left: 20px;
-    margin-top: 40px;
+	list-style-type: none;
+	padding-left: 20px;
+	margin-top: 40px;
 }
