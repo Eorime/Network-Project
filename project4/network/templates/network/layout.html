@@ -77,6 +77,56 @@
 					};
 				});
 			});
+
+			document.querySelectorAll(".edit-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					document.querySelector(`#content-${postId}`).style.display = "none";
+					document.querySelector(`#edit-form-${postId}`).style.display =
+						"block";
+				};
+			});
+
+			document.querySelectorAll(".cancel-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					document.querySelector(`#content-${postId}`).style.display = "block";
+					document.querySelector(`#edit-form-${postId}`).style.display = "none";
+				};
+			});
+
+			document.querySelectorAll(".save-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					const content = document.querySelector(
+						`#edit-textarea-${postId}`
+					).value;
+
+					fetch(`/posts/${postId}/edit`, {
+						method: "POST",
+						body: JSON.stringify({
+							body: content,
+						}),
+						headers: {
+							"X-CSRFToken": csrfToken,
+							"Content-Type": "application/json",
+						},
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							if (data.error) {
+								alert(data.error);
+							} else {
+								document.querySelector(`#post-body-${postId}`).textContent =
+									data.body;
+								document.querySelector(`#content-${postId}`).style.display =
+									"block";
+								document.querySelector(`#edit-form-${postId}`).style.display =
+									"none";
+							}
+						});
+				};
+			});
 		</script>
 	</body>
 </html>

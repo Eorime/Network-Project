@@ -16,11 +16,21 @@
 	<div class="post-list">
 		<h3>All Posts</h3>
 		{% for post in posts %}
-		<div class="post">
+		<div class="post" id="post-{{ post.id }}">
 			<a href="{% url 'profile' post.user.username %}"
 				>{{ post.user.username }}</a
 			>
-			<p>{{post.body}}</p>
+			<div class="post-content" id="content-{{ post.id }}">
+				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
+				{% if user == post.user %}
+				<button class="edit-btn" data-post-id="{{ post.id }}">Edit</button>
+				{% endif %}
+			</div>
+			<div class="edit-form" id="edit-form-{{ post.id }}" style="display: none">
+				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
+				<button class="save-btn" data-post-id="{{ post.id }}">Save</button>
+				<button class="cancel-btn" data-post-id="{{ post.id }}">Cancel</button>
+			</div>
 			<p>{{post.timestamp}}</p>
 			{% if user.is_authenticated %}
 			<button class="like-btn" data-post-id="{{ post.id }}">

@@ -21,10 +21,22 @@
 	<h3>Posts</h3>
 	<div class="posts-container">
 		{% for post in posts %}
-		<div class="post">
-			<p class="post-user">{{ post.user.username }}</p>
-			<p class="post-body">{{ post.body }}</p>
-			<p class="post-timestamp">{{ post.timestamp }}</p>
+		<div class="post" id="post-{{ post.id }}">
+			<a href="{% url 'profile' post.user.username %}"
+				>{{ post.user.username }}</a
+			>
+			<div class="post-content" id="content-{{ post.id }}">
+				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
+				{% if user == post.user %}
+				<button class="edit-btn" data-post-id="{{ post.id }}">Edit</button>
+				{% endif %}
+			</div>
+			<div class="edit-form" id="edit-form-{{ post.id }}" style="display: none">
+				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
+				<button class="save-btn" data-post-id="{{ post.id }}">Save</button>
+				<button class="cancel-btn" data-post-id="{{ post.id }}">Cancel</button>
+			</div>
+			<p>{{post.timestamp}}</p>
 			{% if user.is_authenticated %}
 			<button class="like-btn" data-post-id="{{ post.id }}">
 				{% if user in post.likes.all %} Unlike {% else %} Like {% endif %}

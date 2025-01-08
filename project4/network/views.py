@@ -132,3 +132,21 @@ def like_post(request, post_id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Post not found"}, status=404)
     return JsonResponse({"error": "POST request required"}, status=400)
+
+@login_required
+def edit_post(request, post_id):
+    if request.method == "POST":
+        try:
+            post = Post.objects.get(pk=post_id)
+
+            #security check
+            if request.user != post.user:
+                return JsonResponse({"error": "Unauthorized"}, status=403)
+            
+            body = request.POST.get("body")
+            post.body = body
+            post.save()
+            return JsonResponse({"message": "Post updated successfully", "body": body})
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found"}, status=404)
+    return JsonResponse({"error": "POST request required"}, status=400)
