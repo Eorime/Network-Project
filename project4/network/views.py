@@ -138,11 +138,11 @@ def edit_post(request, post_id):
     if request.method == "POST":
         try:
             post = Post.objects.get(pk=post_id)
-
-            #security check
+            # Security check
             if request.user != post.user:
                 return JsonResponse({"error": "Unauthorized"}, status=403)
             
+            # Change this line to handle form data instead of JSON
             body = request.POST.get("body")
             post.body = body
             post.save()

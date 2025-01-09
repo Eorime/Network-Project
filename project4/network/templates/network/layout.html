@@ -53,15 +53,15 @@
 		<div class="body">{% block body %} {% endblock %}</div>
 
 		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				const csrfToken = document.querySelector(
-					"[name=csrfmiddlewaretoken]"
-				).value;
+			let csrfToken;
 
+			document.addEventListener("DOMContentLoaded", function () {
+				csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+				//like button
 				document.querySelectorAll(".like-btn").forEach((button) => {
 					button.onclick = function () {
 						const postId = this.dataset.postId;
-
 						fetch(`/posts/${postId}/like`, {
 							method: "POST",
 							headers: {
@@ -78,6 +78,7 @@
 				});
 			});
 
+			//edit button
 			document.querySelectorAll(".edit-btn").forEach((button) => {
 				button.onclick = function () {
 					const postId = this.dataset.postId;
@@ -87,14 +88,7 @@
 				};
 			});
 
-			document.querySelectorAll(".cancel-btn").forEach((button) => {
-				button.onclick = function () {
-					const postId = this.dataset.postId;
-					document.querySelector(`#content-${postId}`).style.display = "block";
-					document.querySelector(`#edit-form-${postId}`).style.display = "none";
-				};
-			});
-
+			//save button
 			document.querySelectorAll(".save-btn").forEach((button) => {
 				button.onclick = function () {
 					const postId = this.dataset.postId;
@@ -102,14 +96,14 @@
 						`#edit-textarea-${postId}`
 					).value;
 
+					const formData = new FormData();
+					formData.append("body", content);
+
 					fetch(`/posts/${postId}/edit`, {
 						method: "POST",
-						body: JSON.stringify({
-							body: content,
-						}),
+						body: formData,
 						headers: {
 							"X-CSRFToken": csrfToken,
-							"Content-Type": "application/json",
 						},
 					})
 						.then((response) => response.json())
@@ -124,7 +118,20 @@
 								document.querySelector(`#edit-form-${postId}`).style.display =
 									"none";
 							}
+						})
+						.catch((error) => {
+							console.error("Error:", error);
+							alert("Failed to save changes");
 						});
+				};
+			});
+
+			//cancel button
+			document.querySelectorAll(".cancel-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					document.querySelector(`#content-${postId}`).style.display = "block";
+					document.querySelector(`#edit-form-${postId}`).style.display = "none";
 				};
 			});
 		</script>
