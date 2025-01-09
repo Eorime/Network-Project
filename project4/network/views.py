@@ -5,13 +5,18 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Post
+from django.core.paginator import Paginator
+
 
 
 from .models import User
 
 
 def index(request):
-    posts = Post.objects.all().order_by("-timestamp")
+    post_list = Post.objects.all().order_by("-timestamp")
+    paginator = Paginator(post_list, 10)  # 10 posts 
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
     return render(request, "network/index.html", {
         "posts": posts
     })
@@ -106,12 +111,15 @@ def follow(request, username):
 
 @login_required
 def following(request):
-    following_users = request.user.following.all()
-    posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
-    return render(request, "network/index.html", {
-        "posts": posts,
-        "following_page": True
-    })
+   following_users = request.user.following.all()
+   post_list = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+   paginator = Paginator(post_list, 10)
+   page_number = request.GET.get('page')
+   posts = paginator.get_page(page_number)
+   return render(request, "network/index.html", {
+       "posts": posts,
+       "following_page": True
+   })
 
 
 @login_required
