@@ -36,6 +36,7 @@
 				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
 				<button class="save-btn" data-post-id="{{ post.id }}">Save</button>
 				<button class="cancel-btn" data-post-id="{{ post.id }}">Cancel</button>
+				<button class="delete-btn" data-post-id="{{ post.id }}">Delete</button>
 			</div>
 			<p>{{post.timestamp}}</p>
 			{% if user.is_authenticated %}

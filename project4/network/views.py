@@ -149,7 +149,7 @@ def edit_post(request, post_id):
     if request.method == "POST":
         try:
             post = Post.objects.get(pk=post_id)
-            
+
             if request.user != post.user:
                 return JsonResponse({"error": "Unauthorized"}, status=403)
           
@@ -160,3 +160,32 @@ def edit_post(request, post_id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Post not found"}, status=404)
     return JsonResponse({"error": "POST request required"}, status=400)
+
+@login_required
+def delete_post(request, post_id):
+    if request.method == "DELETE":
+        try:
+            post = Post.objects.get(pk=post_id)
+
+            if request.user == post.user:
+                post.delete()
+                return JsonResponse({
+                    "success": True,
+                    "message": "Post deleted"
+            }) 
+            else: 
+                return JsonResponse({
+                    "success": False,
+                    "message": "Could not delete(server)"
+                }, status= 403)
+        except Post.DoesNotExist:
+            return JsonResponse({
+                 "success": False,
+                "error": "Post not found"
+            }, status=404)
+        
+    return JsonResponse({
+        "success": False,
+        "error": "DELETE request required"
+    }, status=400
+        )

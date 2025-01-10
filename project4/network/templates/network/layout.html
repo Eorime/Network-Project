@@ -133,6 +133,31 @@
 					document.querySelector(`#content-${postId}`).style.display = "block";
 					document.querySelector(`#edit-form-${postId}`).style.display = "none";
 				};
+
+				//delete button
+				document.querySelectorAll(".delete-btn").forEach((button) => {
+					button.onclick = function () {
+						const postId = this.dataset.postId;
+						fetch(`/posts/${postId}/delete`, {
+							method: "DELETE",
+							headers: {
+								"X-CSRFToken": csrfToken,
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								if (data.success) {
+									document.querySelector(`#post-${postId}`).remove();
+								} else {
+									alert(data.error || "Could not delete");
+								}
+							})
+							.catch((error) => {
+								console.error("Error:", error);
+								alert("Could not delete");
+							});
+					};
+				});
 			});
 		</script>
 	</body>
