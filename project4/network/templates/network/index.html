@@ -13,18 +13,24 @@
 </div>
 
 <div class="all-posts-container">
+	<h3 class="all-posts-header">All Posts</h3>
+	<div class="pagination">
+		{% if posts.has_previous %}
+		<a href="?page={{ posts.previous_page_number }}">Previous Page</a>
+		{% endif %} {% if posts.has_next %}
+		<a href="?page={{ posts.next_page_number }}">Next Page</a>
+		{% endif %}
+	</div>
 	<div class="post-list">
-		<h3>All Posts</h3>
 		{% for post in posts %}
 		<div class="post" id="post-{{ post.id }}">
-			<a href="{% url 'profile' post.user.username %}"
+			<a class="username-class" href="{% url 'profile' post.user.username %}"
 				>{{ post.user.username }}</a
 			>
 			<div class="post-content" id="content-{{ post.id }}">
-				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
-				{% if user == post.user %}
 				<button class="edit-btn" data-post-id="{{ post.id }}">Edit</button>
-				{% endif %}
+				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
+				{% if user == post.user %} {% endif %}
 			</div>
 			<div class="edit-form" id="edit-form-{{ post.id }}" style="display: none">
 				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
@@ -37,18 +43,11 @@
 				{% if user in post.likes.all %} Unlike {% else %} Like {% endif %}
 			</button>
 			{% endif %}
-			<span id="likes-{{ post.id }}" class="likes-count"
-				>Likes: {{ post.likes.count }}</span
+			<span id="likes-{{ post.id }}" class="likes-count"></span>
+				{{ post.likes.count }}</span
 			>
 		</div>
 		{% endfor %}
-		<div class="pagination">
-			{% if posts.has_previous %}
-			<a href="?page={{ posts.previous_page_number }}">Previous</a>
-			{% endif %} {% if posts.has_next %}
-			<a href="?page={{ posts.next_page_number }}">Next</a>
-			{% endif %}
-		</div>
 	</div>
 </div>
 {% endblock %}
