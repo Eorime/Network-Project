@@ -125,3 +125,13 @@ button:hover {
 .username-class {
 	font-weight: bold;
 }
+
+.login {
+	width: 300px;
+	padding-left: 20px;
+}
+
+.register {
+	width: 300px;
+	padding-left: 20px;
+}
