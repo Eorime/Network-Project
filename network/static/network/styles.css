@@ -1,0 +1,137 @@
+body {
+}
+
+.create-container {
+	height: 25%;
+	width: 25%;
+	padding-left: 20px;
+}
+
+.profile-container {
+	padding-left: 20px;
+	padding-top: 20px;
+	word-wrap: break-word;
+}
+
+.create-form {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.create-post-btn {
+	margin-top: 5px;
+	width: 25%;
+	padding-top: 2px;
+	padding-bottom: 3px;
+}
+
+.new-post-header {
+	font-size: 1.2em;
+}
+
+.all-posts-container {
+	width: 80%;
+	padding-left: 20px;
+	padding-bottom: 20px;
+}
+
+.posts-container {
+	list-style-type: none;
+	padding-left: 20px;
+	margin-top: 20px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 20px;
+}
+
+.post-list {
+	list-style-type: none;
+	padding-left: 20px;
+	margin-top: 20px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 20px;
+}
+
+.post {
+	padding: 20px;
+
+	width: auto;
+	border: 1px solid black;
+	height: auto;
+	border-radius: 8px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	position: relative;
+}
+
+.all-posts-header {
+	margin-top: 20px;
+	text-wrap: wrap;
+}
+
+textarea {
+	border-radius: 4px;
+}
+
+.edit-btn {
+	right: 10px;
+	top: 10px;
+	margin-bottom: 20px;
+	background-color: transparent;
+	border: none;
+	position: absolute;
+	color: rgb(49, 49, 184);
+}
+
+.edit-btn:hover {
+	opacity: 0.8;
+}
+
+.delete-btn {
+	right: 10px;
+	top: 10px;
+	margin-bottom: 20px;
+	background-color: transparent;
+	border: none;
+	position: absolute;
+	color: rgb(49, 49, 184);
+}
+
+.delete-btn:hover {
+	opacity: 0.8;
+}
+
+a {
+	color: inherit;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+button {
+	background-color: transparent;
+	border: 1px gray solid;
+	border-radius: 4px;
+}
+
+button:hover {
+	opacity: 0.8;
+}
+
+.username-class {
+	font-weight: bold;
+}
+
+.login {
+	width: 300px;
+	padding-left: 20px;
+}
+
+.register {
+	width: 300px;
+	padding-left: 20px;
+}

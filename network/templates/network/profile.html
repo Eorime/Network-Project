@@ -1,0 +1,54 @@
+<!-- profile.html -->
+{% extends "network/layout.html" %} {% block body %}
+<div class="profile-container">
+	<h2>{{ profile.username }}'s Profile</h2>
+
+	<div class="stats">
+		<p>Followers: {{ followers_count }}</p>
+		<p>Following: {{ following_count }}</p>
+	</div>
+
+	{% if not is_self %}
+	<form action="{% url 'follow' profile.username %}" method="post">
+		{% csrf_token %} {% if is_following %}
+		<button name="follow" value="0" class="btn btn-secondary">Unfollow</button>
+		{% else %}
+		<button name="follow" value="1" class="btn btn-primary">Follow</button>
+		{% endif %}
+	</form>
+	{% endif %}
+
+	<h3>Posts</h3>
+	<div class="posts-container">
+		{% for post in posts %}
+		<div class="post" id="post-{{ post.id }}">
+			<a href="{% url 'profile' post.user.username %}"
+				>{{ post.user.username }}</a
+			>
+			<div class="post-content" id="content-{{ post.id }}">
+				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
+				{% if user == post.user %}
+				<button class="edit-btn" data-post-id="{{ post.id }}">Edit</button>
+				{% endif %}
+			</div>
+			<div class="edit-form" id="edit-form-{{ post.id }}" style="display: none">
+				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
+				<button class="save-btn" data-post-id="{{ post.id }}">Save</button>
+				<button class="cancel-btn" data-post-id="{{ post.id }}">Cancel</button>
+			</div>
+			<p>{{post.timestamp}}</p>
+			{% if user.is_authenticated %}
+			<button class="like-btn" data-post-id="{{ post.id }}">
+				{% if user in post.likes.all %} Unlike {% else %} Like {% endif %}
+			</button>
+			{% endif %}
+			<span id="likes-{{ post.id }}" class="likes-count"
+				>{{ post.likes.count }}</span
+			>
+		</div>
+		{% empty %}
+		<p>No posts yet.</p>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

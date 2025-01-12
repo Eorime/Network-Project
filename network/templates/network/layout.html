@@ -1,0 +1,164 @@
+<!-- layout.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>{% block title %}Social Network{% endblock %}</title>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"
+		/>
+		<link href="{% static 'network/styles.css' %}" rel="stylesheet" />
+	</head>
+	<body>
+		{% csrf_token %}
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">Network</a>
+
+			<div class="layout-div">
+				<ul class="navbar-nav mr-auto">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="#"
+							><strong>{{ user.username }}</strong></a
+						>
+					</li>
+					{% endif %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'index' %}">All Posts</a>
+					</li>
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'following' %}">Following</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'login' %}">Log In</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'register' %}">Register</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+
+		<div class="body">{% block body %} {% endblock %}</div>
+
+		<script>
+			let csrfToken;
+
+			document.addEventListener("DOMContentLoaded", function () {
+				csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+				//like button
+				document.querySelectorAll(".like-btn").forEach((button) => {
+					button.onclick = function () {
+						const postId = this.dataset.postId;
+						fetch(`/posts/${postId}/like`, {
+							method: "POST",
+							headers: {
+								"X-CSRFToken": csrfToken,
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								document.querySelector(`#likes-${postId}`).textContent =
+									data.likes;
+								this.textContent = data.liked ? "Unlike" : "Like";
+							});
+					};
+				});
+			});
+
+			//edit button
+			document.querySelectorAll(".edit-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					document.querySelector(`#content-${postId}`).style.display = "none";
+					document.querySelector(`#edit-form-${postId}`).style.display =
+						"block";
+				};
+			});
+
+			//save button
+			document.querySelectorAll(".save-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					const content = document.querySelector(
+						`#edit-textarea-${postId}`
+					).value;
+
+					const formData = new FormData();
+					formData.append("body", content);
+
+					fetch(`/posts/${postId}/edit`, {
+						method: "POST",
+						body: formData,
+						headers: {
+							"X-CSRFToken": csrfToken,
+						},
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							if (data.error) {
+								alert(data.error);
+							} else {
+								document.querySelector(`#post-body-${postId}`).textContent =
+									data.body;
+								document.querySelector(`#content-${postId}`).style.display =
+									"block";
+								document.querySelector(`#edit-form-${postId}`).style.display =
+									"none";
+							}
+						})
+						.catch((error) => {
+							console.error("Error:", error);
+							alert("Failed to save changes");
+						});
+				};
+			});
+
+			//cancel button
+			document.querySelectorAll(".cancel-btn").forEach((button) => {
+				button.onclick = function () {
+					const postId = this.dataset.postId;
+					document.querySelector(`#content-${postId}`).style.display = "block";
+					document.querySelector(`#edit-form-${postId}`).style.display = "none";
+				};
+
+				//delete button
+				document.querySelectorAll(".delete-btn").forEach((button) => {
+					button.onclick = function () {
+						const postId = this.dataset.postId;
+						fetch(`/posts/${postId}/delete`, {
+							method: "DELETE",
+							headers: {
+								"X-CSRFToken": csrfToken,
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								if (data.success) {
+									document.querySelector(`#post-${postId}`).remove();
+								} else {
+									alert(data.error || "Could not delete");
+								}
+							})
+							.catch((error) => {
+								console.error("Error:", error);
+								alert("Could not delete");
+							});
+					};
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends "network/layout.html" %} {% block body %}
+<div class="create-container">
+	{% if request.user.is_authenticated %}
+	<p class="new-post-header">New Post</p>
+	<form class="create-form" action="{% url 'newpost' %}" method="POST">
+		{% csrf_token %}
+		<textarea name="body"></textarea>
+		<input type="submit" value="Post" class="create-post-btn btn btn-primary" />
+	</form>
+	{% else %}
+	<p>Please log in to create a post.</p>
+	{% endif %}
+</div>
+
+<div class="all-posts-container">
+	<h3 class="all-posts-header">All Posts</h3>
+	<div class="pagination">
+		{% if posts.has_previous %}
+		<a href="?page={{ posts.previous_page_number }}">Previous Page</a>
+		{% endif %} {% if posts.has_next %}
+		<a href="?page={{ posts.next_page_number }}">Next Page</a>
+		{% endif %}
+	</div>
+	<div class="post-list">
+		{% for post in posts %}
+		<div class="post" id="post-{{ post.id }}">
+			<a class="username-class" href="{% url 'profile' post.user.username %}"
+				>{{ post.user.username }}</a
+			>
+			<div class="post-content" id="content-{{ post.id }}">
+				{% if user == post.user %}
+				<button class="edit-btn" data-post-id="{{ post.id }}">Edit</button>
+				{% endif %}
+				<p class="post-body" id="post-body-{{ post.id }}">{{post.body}}</p>
+			</div>
+			<div class="edit-form" id="edit-form-{{ post.id }}" style="display: none">
+				<textarea id="edit-textarea-{{ post.id }}">{{post.body}}</textarea>
+				<button class="save-btn" data-post-id="{{ post.id }}">Save</button>
+				<button class="cancel-btn" data-post-id="{{ post.id }}">Cancel</button>
+				<button class="delete-btn" data-post-id="{{ post.id }}">Delete</button>
+			</div>
+			<p>{{post.timestamp}}</p>
+			{% if user.is_authenticated %}
+			<button class="like-btn" data-post-id="{{ post.id }}">
+				{% if user in post.likes.all %} Unlike {% else %} Like {% endif %}
+			</button>
+			{% endif %}
+			<span>Likes</span>
+			<span id="likes-{{ post.id }}" class="likes-count"></span>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
